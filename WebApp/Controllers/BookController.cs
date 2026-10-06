@@ -20,4 +20,9 @@ public class BookController : Controller
         ViewBag.Count = count;
         return View();
     }
+
+    public IActionResult EchoForm()
+    {
+        return View();
+    }
 }
