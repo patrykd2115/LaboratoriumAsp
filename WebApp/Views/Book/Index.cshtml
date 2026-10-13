@@ -1,0 +1,26 @@
+﻿@model List<Book>
+<h2>Lista książek</h2>
+<a asp-action="Create" class="btn btn-primary">Dodaj książke</a>
+<table>
+    <thead>
+    <th>
+        Tytuł
+    </th>
+    <th>
+        Rok
+    </th>
+    <th>
+        Autor
+    </th>
+    <th>
+        Cena
+    </th>
+    </thead>
+    <tbody>
+
+        @foreach (var book in @Model)
+        {
+            <partial model=@book name="_BookRow"></partial>
+        }
+        </tbody>
+</table>
