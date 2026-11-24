@@ -1,0 +1,13 @@
+﻿@model PagedResult<Book>
+@{ ViewData["Title"] ??= "Książki"; }
+<h2>@ViewData["Title"]</h2>
+<a asp-action="Create" class="btn btn-primary mb-3">+ Dodaj książkę</a>
+<table class="table">
+    <thead><tr><th>Tytuł</th><th>Autor</th><th>Rok</th><th>Cena</th></tr></thead>
+    <tbody>
+    @foreach (var b in Model.Items)
+    {
+        <partial name="_BookRow" model="b" />
+    }
+    </tbody>
+</table>
