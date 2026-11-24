@@ -1,6 +1,10 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
 using WebApp.Models;
 
 namespace WebApp.Controllers;
@@ -60,4 +64,23 @@ public class HomeController : Controller
         return View();
     }
 
+    public IActionResult Routes([FromServices] IActionDescriptorCollectionProvider provider)
+    {
+        var info = provider.ActionDescriptors.Items.OfType<ControllerActionDescriptor>()
+            .Select(a => new RouteInfo(
+                Pattern: $"{a.AttributeRouteInfo?.Template} ?? {a.ControllerName}/{a.ActionName}",
+                Controller: a.ControllerName,
+                Action: a.ActionName,
+                Area: a.RouteValues.TryGetValue("area",out var area) ? area : null,
+                Methods: string.Join(", ", a.ActionConstraints?.OfType<HttpMethodActionConstraint>()
+                    .SelectMany(c => c.HttpMethods) ?? new[] {"*"})
+                )
+            );
+        return View(info);
+    }
+    
+    public IActionResult Boom() => throw new InvalidOperationException("Celowy wyjątek");
+
 }
+
+public record RouteInfo(string Pattern, string Controller, string Action, string? Area, string Methods);
