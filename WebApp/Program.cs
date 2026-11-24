@@ -1,4 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using WebApp.Infrastructure;
+using WebApp.Models;
+using WebApp.Models.Ef;
 
 namespace WebApp;
 
@@ -12,6 +15,10 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews(o => o.Filters.Add<GlobalExceptionFilter>());
+        
+        builder.Services.AddDbContext<BookDbContext>(o =>
+            o.UseSqlite(builder.Configuration.GetConnectionString("Default")));
+        builder.Services.AddScoped<IBookService, EfBookService>(); 
 
         var app = builder.Build();
 
